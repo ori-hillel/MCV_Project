@@ -1,0 +1,13 @@
+numpy>=1.24.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+scikit-learn>=1.2.0
+Pillow>=10.0.0
+tqdm>=4.66.0
+
+# PyTorch and torchvision must match your CUDA installation if GPU is used.
+# Recommended CUDA 12.1 install:
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+torch>=2.2.0
+torchvision>=0.17.0
