@@ -239,14 +239,12 @@ def train(
     visualize_every=2,
     num_visualizations=5,
 ):
-    if not torch.cuda.is_available():
-        raise RuntimeError(
-            "CUDA is unavailable."
-        )
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    device = torch.device("cuda")
-
-    print("GPU:", torch.cuda.get_device_name(0))
+    if device.type == "cuda":
+        print("GPU:", torch.cuda.get_device_name(0))
+    else:
+        print("CUDA unavailable; using CPU.")
 
     torch.backends.cudnn.benchmark = True
 
@@ -284,7 +282,7 @@ def train(
         T_max=epochs,
     )
 
-    scaler = torch.amp.GradScaler("cuda")
+    scaler = torch.amp.GradScaler("cuda", enabled=(device.type == "cuda"))
 
     best_val = float("inf")
 

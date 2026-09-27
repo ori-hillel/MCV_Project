@@ -16,6 +16,7 @@ Expected project root:
 ```text
 <repo-root>/
 ├── dataset.py
+├── surprise.py
 ├── model_v2.py
 ├── gaze_student.py
 ├── gaze_data.py
@@ -95,6 +96,8 @@ This reproduces the reported evaluation without retraining the model.
 - Minimum: 12 GB VRAM; recommended: 24 GB+
 - Python 3.10 or 3.11
 
+CUDA is recommended for practical runtime, but it is not required. The scripts now select CUDA when it is available and otherwise fall back to CPU. CPU execution is expected to be much slower, especially during ViT training, but it should remain functional.
+
 ### Software
 Install the following before running the project:
 
@@ -103,6 +106,12 @@ Install the following before running the project:
 python -m pip install --upgrade pip setuptools wheel
 python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 python -m pip install numpy matplotlib seaborn scikit-learn pillow tqdm
+```
+
+You can also install the pinned project dependencies with:
+
+```powershell
+python -m pip install -r requirements.txt
 ```
 
 If you do not want to use the CUDA wheel, use the standard PyTorch installation instead:
@@ -273,7 +282,15 @@ python evaluate_from_weights.py --weights "checkpoints\best_model_v2.pt" --gaze-
 ## Troubleshooting
 
 ### CUDA not detected
-Check that:
+CUDA is optional. If it is unavailable, omit `--device cuda` or use `--device cpu`; the scripts will use the CPU. For example:
+
+```powershell
+python generate_pseudo_gaze.py --root-dir "." --split train --output "paper_gaze_outputs\train_pseudo_gaze.pt" --device cpu
+python train_gaze_student.py --train-targets "paper_gaze_outputs\train_pseudo_gaze.pt" --val-targets "paper_gaze_outputs\val_pseudo_gaze.pt" --output "paper_gaze_outputs\best_gaze_student.pt" --num-workers 0
+python evaluate_from_weights.py --device cpu
+```
+
+If CUDA is expected but not detected, check that:
 - your NVIDIA driver is installed
 - CUDA is enabled in the environment
 - PyTorch matches your CUDA version

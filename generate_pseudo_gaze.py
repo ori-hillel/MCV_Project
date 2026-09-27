@@ -80,7 +80,11 @@ def main():
     parser.add_argument("--output", required=True)
     parser.add_argument("--fps", type=int, default=30)
     parser.add_argument("--grid-size", type=int, default=14)
-    parser.add_argument("--device", default="cuda")
+    parser.add_argument(
+        "--device",
+        default="cuda" if torch.cuda.is_available() else "cpu",
+        help="Torch device. Defaults to CUDA when available, otherwise CPU.",
+    )
 
     args = parser.parse_args()
 
